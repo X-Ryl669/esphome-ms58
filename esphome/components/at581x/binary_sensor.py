@@ -1,12 +1,15 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome import pins
+from esphome import pins, automation
 from esphome.components import i2c, binary_sensor
+from esphome.automation import maybe_simple_id
 from esphome.const import (
+    DEVICE_CLASS_MOTION,
     DEVICE_CLASS_DISTANCE,
     UNIT_CENTIMETER,
     UNIT_PERCENT,
     CONF_LIGHT,
+    CONF_FREQUENCY,
     DEVICE_CLASS_ILLUMINANCE,
     ENTITY_CATEGORY_DIAGNOSTIC,
     ICON_SIGNAL,
@@ -15,12 +18,13 @@ from esphome.const import (
     ICON_LIGHTBULB,
 )
 
+from . import CONF_AT581X_ID, AT581XComponent, at581x_ns
+
+
 CODEOWNERS = ["@X-Ryl669"]
 DEPENDENCIES = ["i2c"]
 MULTI_CONF = True
 
-at581x_ns = cg.esphome_ns.namespace("at581x")
-AT581XComponent = at581x_ns.class_("AT581XComponent", cg.Component, i2c.I2CDevice, binary_sensor.BinarySensor)
 
 # Actions
 AT581XResetAction = at581x_ns.class_(
@@ -30,7 +34,6 @@ AT581XSettingsAction = at581x_ns.class_(
     "at581xSettingsAction", automation.Action
 )
 
-CONF_AT581X_ID = "at581x_id"
 CONF_SENSING_DISTANCE = "sensing_distance"
 CONF_FACTORY_RESET = "factory_reset"
 CONF_SENSITIVITY = "sensitivity"
@@ -47,10 +50,11 @@ CONFIG_SCHEMA = cv.All(
     binary_sensor.binary_sensor_schema(
         AT581XComponent,
         device_class=DEVICE_CLASS_MOTION,
+        icon=ICON_MOTION_SENSOR,
     ).extend(
         {
             cv.GenerateID(): cv.declare_id(AT581XComponent),
-            cv.Required(CONF_DETECTION_PIN, default=21): pins.internal_gpio_input_pin_schema,
+            cv.Optional(CONF_DETECTION_PIN, default=21): pins.internal_gpio_input_pin_schema,
         }
     )
     .extend(cv.COMPONENT_SCHEMA)
@@ -70,7 +74,7 @@ async def to_code(config):
 
 @automation.register_action(
     "at581x.reset",
-    at581xResetAction,
+    AT581XResetAction,
     maybe_simple_id(
         {
             cv.GenerateID(): cv.use_id(AT581XComponent),
