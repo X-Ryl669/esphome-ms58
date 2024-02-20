@@ -1,6 +1,8 @@
 import esphome.codegen as cg
+import esphome.config_validation as cv
 from esphome import pins, automation
 from esphome.components import i2c
+from esphome.automation import maybe_simple_id
 from esphome.const import (
     CONF_ID,
     DEVICE_CLASS_MOTION,
@@ -24,7 +26,7 @@ MULTI_CONF = True
 
 
 at581x_ns = cg.esphome_ns.namespace("at581x")
-AT581XComponent = at581x_ns.class_("AT581XComponent", cg.Component, i2c.I2CDevice, binary_sensor.BinarySensor)
+AT581XComponent = at581x_ns.class_("AT581XComponent", cg.Component, i2c.I2CDevice)
 
 
 CONF_AT581X_ID = "at581x_id"
@@ -69,8 +71,6 @@ AT581XSettingsAction = at581x_ns.class_(
     "at581xSettingsAction", automation.Action
 )
 
-R
-
 @automation.register_action(
     "at581x.reset",
     AT581XResetAction,
@@ -88,7 +88,7 @@ async def at581x_reset_to_code(config, action_id, template_arg, args):
 
 RADAR_SETTINGS_SCHEMA = cv.Schema(
     {
-        cv.Required(CONF_ID): cv.use_id(LD2410Component),
+        cv.Required(CONF_ID): cv.use_id(AT581XComponent),
         cv.Optional(CONF_FACTORY_RESET): cv.templatable(cv.boolean),
         cv.Optional(CONF_FREQUENCY, default=5800): cv.one_of(5696, 5715, 5730, 5748, 5765, 5784, 5800, 5819, 5836, 5851, 5869, 5888, int=True),
         cv.Optional(CONF_SENSING_DISTANCE, default=823): cv.int_range(min=0, max=1023),

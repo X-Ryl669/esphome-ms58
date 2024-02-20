@@ -70,6 +70,10 @@ namespace at581x {
 
 static const char *const TAG = "at581x";
 
+AT581XComponent::AT581XComponent() {}
+
+#error here
+
 bool AT581XComponent::i2c_write_reg(uint8_t addr, uint8_t data) {
   return write_register(addr, &data, 1) == esphome::i2c::NO_ERROR;
 }
@@ -95,11 +99,16 @@ void AT581XComponent::setup() {
   if (!i2c_write_config()) {
     ESP_LOGCONFIG(TAG, "Setting up AT581X '%s' failed...", this->name_.c_str());
   }
+  LOG_BINARY_SENSOR("  ", "MotionBinarySensor", this->motion_binary_sensor_);
+
 }
 void AT581XComponent::update() override {
   // The main operation is to detect the human presence
   bool state = this->detection_pin_->digital_read();
   this->publish_state(state);
+  if (this->motion_binary_sensor_ != nullptr) {
+      this->motion_binary_sensor_->publish_state(state);
+    }
 }
 void AT581XComponent::dump_config() {
   LOG_BINARY_SENSOR("", "AT581X", this);
@@ -210,6 +219,8 @@ void AT581XComponent::set_rf_mode(bool enable) {
       return;
     }
 }
+
+
 
 }  // namespace at581x
 }  // namespace esphome
