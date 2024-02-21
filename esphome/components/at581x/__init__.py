@@ -65,10 +65,10 @@ async def to_code(config):
 
 # Actions
 AT581XResetAction = at581x_ns.class_(
-    "at581xResetAction", automation.Action
+    "AT581XResetAction", automation.Action
 )
 AT581XSettingsAction = at581x_ns.class_(
-    "at581xSettingsAction", automation.Action
+    "AT581XSettingsAction", automation.Action
 )
 
 @automation.register_action(
@@ -119,7 +119,7 @@ async def at581x_settings_to_code(config, action_id, template_arg, args):
 
     # Radar configuration
     if CONF_FACTORY_RESET in config:
-        cg.add(var.set_factory_reset())
+        cg.add(var.set_factory_reset(1))
 
     if CONF_FREQUENCY in config:
         cg.add(var.set_frequency(config[CONF_FREQUENCY]))

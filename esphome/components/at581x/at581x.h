@@ -6,6 +6,7 @@
 #include "esphome/core/hal.h"
 #include "esphome/components/binary_sensor/binary_sensor.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/switch/switch.h"
 #include "esphome/components/i2c/i2c.h"
 
 namespace esphome {
@@ -13,12 +14,17 @@ namespace at581x {
 
 class AT581XComponent : public Component, public i2c::I2CDevice {
   SUB_BINARY_SENSOR(motion);
+protected:
+  switch_::Switch *rf_switch_{nullptr};
+public:
+    void set_rf_switch(switch_::Switch *s) { this->rf_switch_ = s; s->turn_on(); }
+
 public:
   AT581XComponent();
   void setup() override;
   void loop() override;
   void dump_config() override;
-  float get_setup_priority() const override;
+//  float get_setup_priority() const override;
 
   void set_sensing_distance(int distance) { this->delta_ = 1023 - distance; }
 
@@ -41,7 +47,6 @@ public:
 
  protected:
   int freq_;
-  int distance_;
   int self_check_time_ms_;    /*!< Power-on self-test time, range: 0 ~ 65536 ms */
   int protect_time_ms_;       /*!< Protection time, recommended 1000 ms */
   int trigger_base_time_ms_;  /*!< Default: 500 ms */
