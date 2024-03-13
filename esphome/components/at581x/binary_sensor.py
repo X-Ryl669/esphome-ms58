@@ -1,13 +1,12 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome import pins, automation
-from esphome.components import i2c, binary_sensor
+from esphome.components import binary_sensor
 from esphome.const import (
     DEVICE_CLASS_MOTION,
     ICON_MOTION_SENSOR,
 )
 
-from . import CONF_AT581X_ID, AT581XComponent, at581x_ns
+from . import CONF_AT581X_ID, AT581XComponent
 
 DEPENDENCIES = ["at581x"]
 
@@ -20,6 +19,7 @@ CONFIG_SCHEMA = {
         icon=ICON_MOTION_SENSOR,
     ),
 }
+
 
 async def to_code(config):
     at581x_component = await cg.get_variable(config[CONF_AT581X_ID])

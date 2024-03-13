@@ -5,32 +5,17 @@ from esphome.components import i2c
 from esphome.automation import maybe_simple_id
 from esphome.const import (
     CONF_ID,
-    DEVICE_CLASS_MOTION,
-    DEVICE_CLASS_DISTANCE,
-    UNIT_CENTIMETER,
-    UNIT_PERCENT,
-    CONF_LIGHT,
     CONF_FREQUENCY,
-    DEVICE_CLASS_ILLUMINANCE,
-    ENTITY_CATEGORY_DIAGNOSTIC,
-    ICON_SIGNAL,
-    ICON_FLASH,
-    ICON_MOTION_SENSOR,
-    ICON_LIGHTBULB,
 )
-
 
 CODEOWNERS = ["@X-Ryl669"]
 DEPENDENCIES = ["i2c"]
 MULTI_CONF = True
 
-
 at581x_ns = cg.esphome_ns.namespace("at581x")
 AT581XComponent = at581x_ns.class_("AT581XComponent", cg.Component, i2c.I2CDevice)
 
-
 CONF_AT581X_ID = "at581x_id"
-
 
 CONF_SENSING_DISTANCE = "sensing_distance"
 CONF_FACTORY_RESET = "factory_reset"
@@ -42,8 +27,6 @@ CONF_TRIGGER_BASE = "trigger_base"
 CONF_TRIGGER_KEEP = "trigger_keep"
 CONF_STAGE_GAIN = "stage_gain"
 CONF_POWER_CONSUMPTION = "power_consumption"
-
-
 
 CONFIG_SCHEMA = cv.Schema(
 {
@@ -81,7 +64,7 @@ AT581XSettingsAction = at581x_ns.class_(
     ),
 )
 async def at581x_reset_to_code(config, action_id, template_arg, args):
-    var = cg.new_Pvariable(action_id, template_arg, paren)
+    var = cg.new_Pvariable(action_id, template_arg)
     await cg.register_parented(var, config[CONF_ID])
 
     return var
